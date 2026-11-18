@@ -1,11 +1,11 @@
 <?php
 
-namespace TheIconic\NameParser\Mapper;
+namespace InterflonXebia\NameParser\Mapper;
 
-use TheIconic\NameParser\Language\English;
-use TheIconic\NameParser\Part\Lastname;
-use TheIconic\NameParser\Part\Firstname;
-use TheIconic\NameParser\Part\Suffix;
+use InterflonXebia\NameParser\Language\English;
+use InterflonXebia\NameParser\Part\Lastname;
+use InterflonXebia\NameParser\Part\Firstname;
+use InterflonXebia\NameParser\Part\Suffix;
 
 class SuffixMapperTest extends AbstractMapperTestCase
 {

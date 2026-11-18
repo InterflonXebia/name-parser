@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace TheIconic\NameParser\Mapper;
+namespace InterflonXebia\NameParser\Mapper;
 
-use TheIconic\NameParser\Part\AbstractPart;
-use TheIconic\NameParser\Part\Firstname;
-use TheIconic\NameParser\Part\Lastname;
-use TheIconic\NameParser\Part\Middlename;
+use InterflonXebia\NameParser\Part\AbstractPart;
+use InterflonXebia\NameParser\Part\Firstname;
+use InterflonXebia\NameParser\Part\Lastname;
+use InterflonXebia\NameParser\Part\Middlename;
 
 class MiddlenameMapper extends AbstractMapper
 {

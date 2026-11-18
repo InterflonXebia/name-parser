@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TheIconic\NameParser\Part;
+namespace InterflonXebia\NameParser\Part;
 
 class Nickname extends AbstractPart
 {

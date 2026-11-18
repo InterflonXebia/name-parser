@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace TheIconic\NameParser\Mapper;
+namespace InterflonXebia\NameParser\Mapper;
 
-use TheIconic\NameParser\Part\AbstractPart;
-use TheIconic\NameParser\Part\Nickname;
+use InterflonXebia\NameParser\Part\AbstractPart;
+use InterflonXebia\NameParser\Part\Nickname;
 
 class NicknameMapper extends AbstractMapper
 {

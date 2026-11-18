@@ -1,10 +1,10 @@
 <?php
 
-namespace TheIconic\NameParser\Mapper;
+namespace InterflonXebia\NameParser\Mapper;
 
-use TheIconic\NameParser\Part\Salutation;
-use TheIconic\NameParser\Part\Firstname;
-use TheIconic\NameParser\Part\Lastname;
+use InterflonXebia\NameParser\Part\Salutation;
+use InterflonXebia\NameParser\Part\Firstname;
+use InterflonXebia\NameParser\Part\Lastname;
 
 class FirstnameMapperTest extends AbstractMapperTestCase
 {

@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace TheIconic\NameParser;
+namespace InterflonXebia\NameParser;
 
-use TheIconic\NameParser\Language\English;
-use TheIconic\NameParser\Mapper\AbstractMapper;
-use TheIconic\NameParser\Mapper\FirstnameMapper;
-use TheIconic\NameParser\Mapper\InitialMapper;
-use TheIconic\NameParser\Mapper\LastnameMapper;
-use TheIconic\NameParser\Mapper\MiddlenameMapper;
-use TheIconic\NameParser\Mapper\NicknameMapper;
-use TheIconic\NameParser\Mapper\SalutationMapper;
-use TheIconic\NameParser\Mapper\SuffixMapper;
+use InterflonXebia\NameParser\Language\English;
+use InterflonXebia\NameParser\Mapper\AbstractMapper;
+use InterflonXebia\NameParser\Mapper\FirstnameMapper;
+use InterflonXebia\NameParser\Mapper\InitialMapper;
+use InterflonXebia\NameParser\Mapper\LastnameMapper;
+use InterflonXebia\NameParser\Mapper\MiddlenameMapper;
+use InterflonXebia\NameParser\Mapper\NicknameMapper;
+use InterflonXebia\NameParser\Mapper\SalutationMapper;
+use InterflonXebia\NameParser\Mapper\SuffixMapper;
 
 class Parser
 {

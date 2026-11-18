@@ -10,7 +10,7 @@
          failOnWarning="true"
 >
     <testsuites>
-        <testsuite name="The Iconic Name Parser Test Suite">
+        <testsuite name="InterflonXebia Name Parser Test Suite">
             <directory>./tests</directory>
         </testsuite>
     </testsuites>

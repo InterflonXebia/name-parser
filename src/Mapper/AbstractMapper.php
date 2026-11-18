@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace TheIconic\NameParser\Mapper;
+namespace InterflonXebia\NameParser\Mapper;
 
-use TheIconic\NameParser\Part\AbstractPart;
+use InterflonXebia\NameParser\Part\AbstractPart;
 
 abstract class AbstractMapper
 {

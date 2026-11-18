@@ -1,9 +1,9 @@
 <?php
 
-namespace TheIconic\NameParser\Mapper;
+namespace InterflonXebia\NameParser\Mapper;
 
-use TheIconic\NameParser\Part\Salutation;
-use TheIconic\NameParser\Part\Nickname;
+use InterflonXebia\NameParser\Part\Salutation;
+use InterflonXebia\NameParser\Part\Nickname;
 
 class NicknameMapperTest extends AbstractMapperTestCase
 {

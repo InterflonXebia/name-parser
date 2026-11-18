@@ -1,10 +1,10 @@
 <?php
 
-namespace TheIconic\NameParser;
+namespace InterflonXebia\NameParser;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use TheIconic\NameParser\Language\German;
+use InterflonXebia\NameParser\Language\German;
 
 class GermanParserTest extends TestCase
 {

@@ -1,5 +1,5 @@
 {
-    "name": "kwojtas/name-parser",
+    "name": "interflonxebia/name-parser",
     "description": "PHP library for parsing a string containing a full name into its parts",
     "type": "library",
     "license": "MIT",
@@ -10,7 +10,7 @@
         },
         {
             "name": "Krzysztof Wojtas",
-            "email": "wojtas.krzysztof@gmail.com"
+            "email": "krzysztof.wojtas@xebia.com"
         }
     ],
     "require": {
@@ -22,12 +22,12 @@
     },
     "autoload": {
         "psr-4": {
-            "TheIconic\\NameParser\\": "src/"
+            "InterflonXebia\\NameParser\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "TheIconic\\NameParser\\": "tests/"
+            "InterflonXebia\\NameParser\\": "tests/"
         }
     }
 }

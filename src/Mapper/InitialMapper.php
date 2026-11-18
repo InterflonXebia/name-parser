@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace TheIconic\NameParser\Mapper;
+namespace InterflonXebia\NameParser\Mapper;
 
-use TheIconic\NameParser\Part\AbstractPart;
-use TheIconic\NameParser\Part\Initial;
+use InterflonXebia\NameParser\Part\AbstractPart;
+use InterflonXebia\NameParser\Part\Initial;
 
 /**
  * single letter, possibly followed by a period

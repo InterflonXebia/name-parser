@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace TheIconic\NameParser\Mapper;
+namespace InterflonXebia\NameParser\Mapper;
 
-use TheIconic\NameParser\Part\AbstractPart;
-use TheIconic\NameParser\Part\Lastname;
-use TheIconic\NameParser\Part\LastnamePrefix;
-use TheIconic\NameParser\Part\Nickname;
-use TheIconic\NameParser\Part\Salutation;
-use TheIconic\NameParser\Part\Suffix;
+use InterflonXebia\NameParser\Part\AbstractPart;
+use InterflonXebia\NameParser\Part\Lastname;
+use InterflonXebia\NameParser\Part\LastnamePrefix;
+use InterflonXebia\NameParser\Part\Nickname;
+use InterflonXebia\NameParser\Part\Salutation;
+use InterflonXebia\NameParser\Part\Suffix;
 
 class LastnameMapper extends AbstractMapper
 {

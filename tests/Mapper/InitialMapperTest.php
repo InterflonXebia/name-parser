@@ -1,11 +1,11 @@
 <?php
 
-namespace TheIconic\NameParser\Mapper;
+namespace InterflonXebia\NameParser\Mapper;
 
-use TheIconic\NameParser\Language\English;
-use TheIconic\NameParser\Part\Initial;
-use TheIconic\NameParser\Part\Salutation;
-use TheIconic\NameParser\Part\Lastname;
+use InterflonXebia\NameParser\Language\English;
+use InterflonXebia\NameParser\Part\Initial;
+use InterflonXebia\NameParser\Part\Salutation;
+use InterflonXebia\NameParser\Part\Lastname;
 
 class InitialMapperTest extends AbstractMapperTestCase
 {

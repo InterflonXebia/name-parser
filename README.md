@@ -1,14 +1,15 @@
-# THE ICONIC Name Parser
+# InterflonXebia Name Parser
 
 [![PHP Version](https://img.shields.io/badge/php-%3E%3D8.2-8892BF.svg)](https://www.php.net/supported-versions.php)
 [![PHPUnit](https://img.shields.io/badge/tested%20with-PHPUnit%2012-3C9CD7.svg)](https://phpunit.de)
-[![Latest Tag](https://img.shields.io/github/v/tag/kwojtas6/name-parser?sort=semver)](https://github.com/kwojtas6/name-parser/tags)
-[![License](https://img.shields.io/github/license/kwojtas6/name-parser.svg)](https://github.com/kwojtas6/name-parser/blob/main/LICENSE)
+[![Latest Tag](https://img.shields.io/github/v/tag/InterflonXebia/name-parser?sort=semver)](https://github.com/InterflonXebia/name-parser/tags)
+[![License](https://img.shields.io/github/license/InterflonXebia/name-parser.svg)](https://github.com/InterflonXebia/name-parser/blob/main/LICENSE)
 [![Forked from](https://img.shields.io/badge/forked%20from-theiconic%2Fname--parser-lightgrey.svg)](https://github.com/theiconic/name-parser)
 
 > **This repository is a fork** of [theiconic/name-parser](https://github.com/theiconic/name-parser),
 > based on upstream release `v1.2.9`.
-> The fork is published as `kwojtas/name-parser` and modernises the library for PHP 8.2+.
+> The fork is published as `interflonxebia/name-parser`, uses the namespace `InterflonXebia\NameParser`
+> and modernises the library for PHP 8.2+.
 
 ## Changes compared to the original project
 
@@ -20,7 +21,8 @@
   - the abstract mapper test base class renamed to `AbstractMapperTestCase`
   - `phpunit.xml.dist` rewritten for the current configuration schema; the suite fails on deprecations and warnings
 - removed the dev dependencies `php-mock/php-mock-phpunit` and `php-coveralls/php-coveralls`, together with `tests/bootstrap.php`
-- package renamed to `kwojtas/name-parser`; **the PHP namespace `TheIconic\NameParser` is unchanged**, so existing code keeps working
+- package renamed to `interflonxebia/name-parser`
+- **PHP namespace changed from `TheIconic\NameParser` to `InterflonXebia\NameParser`** (see [Migrating from theiconic/name-parser](#migrating-from-theiconicname-parser))
 
 ### Code modernisation (PHP 8.x features)
 - `declare(strict_types=1)` in all source files
@@ -39,17 +41,23 @@
 - camel-casing always uses `mb_convert_case()`; the non-multibyte fallback was removed
 
 ### New languages
-- `TheIconic\NameParser\Language\Dutch` – salutations (Dhr., De heer, Mevr., Mw., Ir., Drs., …),
+- `InterflonXebia\NameParser\Language\Dutch` – salutations (Dhr., De heer, Mevr., Mw., Ir., Drs., …),
   "tussenvoegsels" as last name prefixes (van, de, den, der, ter, ten, uit, v.d., …) and suffixes (jr., sr., MSc, …)
-- `TheIconic\NameParser\Language\Spanish` – salutations (Sr., Sra., Srta., Don, Doña, Dra., Lic., …),
+- `InterflonXebia\NameParser\Language\Spanish` – salutations (Sr., Sra., Srta., Don, Doña, Dra., Lic., …),
   last name prefixes (de, del, la, las, los) and suffixes (Jr., hijo, …)
 
 ### Backwards compatibility
-Code that only *uses* the parser works as before (except that `Parser::parse()` now requires a string).
+Code that only *uses* the parser works as before once the namespace is updated (see below),
+except that `Parser::parse()` now requires a string.
 Code that *extends* the library classes may need adjustments:
 - overriding methods must declare compatible return types (e.g. `map(array $parts): array`)
 - overridden fluent setters must return `static`
 - mapper configuration properties are `readonly`
+
+### Migrating from theiconic/name-parser
+1. Replace the dependency: `composer remove theiconic/name-parser && composer require interflonxebia/name-parser`
+2. Replace the namespace in your code: `TheIconic\NameParser\` → `InterflonXebia\NameParser\`
+   (e.g. `use TheIconic\NameParser\Parser;` becomes `use InterflonXebia\NameParser\Parser;`)
 
 ## Purpose
 This is a universal, language-independent name parser.
@@ -68,7 +76,7 @@ E.g. **Mr Anthony R Von Fange III** is parsed to
 - lastname: **von Fange**
 - suffix: **III**
 
-This package has been used by The Iconic in production for years,
+The original package has been used by The Iconic in production for years,
 successfully processing hundreds of thousands of customer names.
 
 ## Features
@@ -104,17 +112,17 @@ This parser is able to handle name patterns with and without comma:
 ## Examples
 
 More than 60 different successfully parsed name patterns can be found in the
-[parser unit test](https://github.com/theiconic/name-parser/blob/master/tests/ParserTest.php#L12-L12).
+[parser unit test](https://github.com/kwojtas6/name-parser/blob/main/tests/ParserTest.php).
 
 ## Setup
 ```bash
-composer require kwojtas/name-parser
+composer require interflonxebia/name-parser
 ```
 
 If the package is not available on Packagist, add this repository as a VCS source first:
 ```json
 "repositories": [
-    { "type": "vcs", "url": "https://github.com/kwojtas6/name-parser" }
+    { "type": "vcs", "url": "https://github.com/InterflonXebia/name-parser" }
 ]
 ```
 
@@ -126,7 +134,7 @@ The original package is still available via `composer require theiconic/name-par
 ```php
 <?php
 
-$parser = new TheIconic\NameParser\Parser();
+$parser = new InterflonXebia\NameParser\Parser();
 
 $name = $parser->parse($input);
 
@@ -178,29 +186,29 @@ echo $name->getFullName(); // J. Peter M. Schluter
 
 ### Setting Languages
 ```php
-$parser = new TheIconic\NameParser\Parser([
-    new TheIconic\NameParser\Language\English(), //default
-    new TheIconic\NameParser\Language\German(),
-    new TheIconic\NameParser\Language\Dutch(),
-    new TheIconic\NameParser\Language\Spanish(),
+$parser = new InterflonXebia\NameParser\Parser([
+    new InterflonXebia\NameParser\Language\English(), //default
+    new InterflonXebia\NameParser\Language\German(),
+    new InterflonXebia\NameParser\Language\Dutch(),
+    new InterflonXebia\NameParser\Language\Spanish(),
 ])
 ```
 
 ### Setting nickname delimiters
 ```php
-$parser = new TheIconic\NameParser\Parser();
+$parser = new InterflonXebia\NameParser\Parser();
 $parser->setNicknameDelimiters(['(' => ')']);
 ```
 
 ### Setting whitespace characters
 ```php
-$parser = new TheIconic\NameParser\Parser();
+$parser = new InterflonXebia\NameParser\Parser();
 $parser->setWhitespace("\t _.");
 ```
 
 ### Limiting the position of salutations
 ```php
-$parser = new TheIconic\NameParser\Parser();
+$parser = new InterflonXebia\NameParser\Parser();
 $parser->setMaxSalutationIndex(2);
 ```
 This will require salutations to appear within the
@@ -211,7 +219,7 @@ the first half of the name parts.
 
 ### Adjusting combined initials support
 ```php
-$parser = new TheIconic\NameParser\Parser();
+$parser = new InterflonXebia\NameParser\Parser();
 $parser->setMaxCombinedInitials(3);
 ```
 Combined initials are combinations of several
@@ -305,4 +313,5 @@ abbreviated titles, like `Prof.` as `Professor` etc. .
 
 ## License
 
-THE ICONIC Name Parser library for PHP is released under the MIT License.
+This library is released under the MIT License.
+It is based on THE ICONIC Name Parser, Copyright (c) 2017 THE ICONIC – see [LICENSE](LICENSE).

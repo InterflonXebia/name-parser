@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace TheIconic\NameParser\Language;
+namespace InterflonXebia\NameParser\Language;
 
-use TheIconic\NameParser\LanguageInterface;
+use InterflonXebia\NameParser\LanguageInterface;
 
 class Dutch implements LanguageInterface
 {

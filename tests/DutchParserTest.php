@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace TheIconic\NameParser;
+namespace InterflonXebia\NameParser;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use TheIconic\NameParser\Language\Dutch;
+use InterflonXebia\NameParser\Language\Dutch;
 
 class DutchParserTest extends TestCase
 {
