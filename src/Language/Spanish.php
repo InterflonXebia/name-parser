@@ -4,16 +4,9 @@ declare(strict_types=1);
 
 namespace InterflonXebia\NameParser\Language;
 
-use InterflonXebia\NameParser\LanguageInterface;
-
-class Spanish implements LanguageInterface
+class Spanish extends AbstractLanguage
 {
     public const SUFFIXES = [
-        'i' => 'I',
-        'ii' => 'II',
-        'iii' => 'III',
-        'iv' => 'IV',
-        'v' => 'V',
         'jr' => 'Jr.',
         'hijo' => 'hijo',
     ];
@@ -27,12 +20,10 @@ class Spanish implements LanguageInterface
         'srta' => 'Srta.',
         'don' => 'Don',
         'doña' => 'Doña',
-        'dr' => 'Dr.',
         'dra' => 'Dra.',
         'lic' => 'Lic.',
         'licda' => 'Licda.',
         'ing' => 'Ing.',
-        'prof' => 'Prof.',
         'profa' => 'Profa.',
     ];
 
@@ -43,19 +34,4 @@ class Spanish implements LanguageInterface
         'las' => 'las',
         'los' => 'los',
     ];
-
-    public function getSuffixes(): array
-    {
-        return self::SUFFIXES;
-    }
-
-    public function getSalutations(): array
-    {
-        return self::SALUTATIONS;
-    }
-
-    public function getLastnamePrefixes(): array
-    {
-        return self::LASTNAME_PREFIXES;
-    }
 }

@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace InterflonXebia\NameParser\Language;
 
-use InterflonXebia\NameParser\LanguageInterface;
-
-class English implements LanguageInterface
+class English extends AbstractLanguage
 {
     public const SUFFIXES = [
         '1st' => '1st',
@@ -14,11 +12,6 @@ class English implements LanguageInterface
         '3rd' => '3rd',
         '4th' => '4th',
         '5th' => '5th',
-        'i' => 'I',
-        'ii' => 'II',
-        'iii' => 'III',
-        'iv' => 'IV',
-        'v' => 'V',
         'apr' => 'APR',
         'cme' => 'CME',
         'dds' => 'DDS',
@@ -37,7 +30,6 @@ class English implements LanguageInterface
     ];
 
     public const SALUTATIONS = [
-        'dr' => 'Dr.',
         'fr' => 'Fr.',
         'madam' => 'Madam',
         'master' => 'Mr.',
@@ -49,7 +41,6 @@ class English implements LanguageInterface
         'mx' => 'Mx.',
         'rev' => 'Rev.',
         'sir' => 'Sir',
-        'prof' => 'Prof.',
         'his honour' => 'His Honour',
         'her honour' => 'Her Honour'
     ];
@@ -71,19 +62,4 @@ class English implements LanguageInterface
         'vere' => 'vere',
         'von' => 'von',
     ];
-
-    public function getSuffixes(): array
-    {
-        return self::SUFFIXES;
-    }
-
-    public function getSalutations(): array
-    {
-        return self::SALUTATIONS;
-    }
-
-    public function getLastnamePrefixes(): array
-    {
-        return self::LASTNAME_PREFIXES;
-    }
 }

@@ -4,16 +4,9 @@ declare(strict_types=1);
 
 namespace InterflonXebia\NameParser\Language;
 
-use InterflonXebia\NameParser\LanguageInterface;
-
-class Dutch implements LanguageInterface
+class Dutch extends AbstractLanguage
 {
     public const SUFFIXES = [
-        'i' => 'I',
-        'ii' => 'II',
-        'iii' => 'III',
-        'iv' => 'IV',
-        'v' => 'V',
         'jr' => 'jr.',
         'sr' => 'sr.',
         'bsc' => 'BSc',
@@ -32,9 +25,7 @@ class Dutch implements LanguageInterface
         'mw' => 'Mw.',
         'mej' => 'Mej.',
         'juffrouw' => 'Juffrouw',
-        'dr' => 'Dr.',
         'drs' => 'Drs.',
-        'prof' => 'Prof.',
         'ir' => 'Ir.',
         'ing' => 'Ing.',
         'mr' => 'Mr.',
@@ -64,19 +55,4 @@ class Dutch implements LanguageInterface
         'vd' => 'v.d.',
         'oude' => 'Oude',
     ];
-
-    public function getSuffixes(): array
-    {
-        return self::SUFFIXES;
-    }
-
-    public function getSalutations(): array
-    {
-        return self::SALUTATIONS;
-    }
-
-    public function getLastnamePrefixes(): array
-    {
-        return self::LASTNAME_PREFIXES;
-    }
 }

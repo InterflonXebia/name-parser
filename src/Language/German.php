@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace InterflonXebia\NameParser\Language;
 
-use InterflonXebia\NameParser\LanguageInterface;
-
-class German implements LanguageInterface
+class German extends AbstractLanguage
 {
     public const SUFFIXES = [
         '1.' => '1.',
@@ -14,11 +12,6 @@ class German implements LanguageInterface
         '3.' => '3.',
         '4.' => '4.',
         '5.' => '5.',
-        'i' => 'I',
-        'ii' => 'II',
-        'iii' => 'III',
-        'iv' => 'IV',
-        'v' => 'V',
     ];
 
     public const SALUTATIONS = [
@@ -32,19 +25,4 @@ class German implements LanguageInterface
         'der' => 'der',
         'von' => 'von',
     ];
-
-    public function getSuffixes(): array
-    {
-        return self::SUFFIXES;
-    }
-
-    public function getSalutations(): array
-    {
-        return self::SALUTATIONS;
-    }
-
-    public function getLastnamePrefixes(): array
-    {
-        return self::LASTNAME_PREFIXES;
-    }
 }
