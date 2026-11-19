@@ -53,7 +53,8 @@
   last name prefixes (de, del, la, las, los) and suffixes (Jr., hijo, …)
 - `LanguageRegistry` creating language definitions by country code (`$registry->create('NL')`),
   behind the `LanguageProviderInterface` abstraction
-- `Parser::addLanguageByCountryCode()` (falls back to English for unsupported country codes),
+- `Parser::setLanguagesByCountryCode()` (replaces all languages) and
+  `addLanguageByCountryCode()` (both fall back to English for unsupported country codes),
   `addLanguage()`, `setLanguages()`, `getLanguages()` and `hasLanguage()`
 - languages and settings changed after the first `parse()` call are now applied
   (the default mappers used to be cached with the configuration of the first call)
@@ -226,15 +227,16 @@ $registry->getCountryCodes();   // ['GB', 'UK', 'US', ..., 'NL', 'BE', ..., 'ES'
 $registry->create('PL');        // throws InvalidArgumentException
 ```
 
-Languages can also be added to an existing parser by country code.
-The parser starts with English by default, so clear the languages first
-if you want to use only the added ones:
+Languages can also be set or added on an existing parser by country code.
+`setLanguagesByCountryCode()` replaces all languages, the first country code
+becomes the primary language (which also defines the name structure, see below).
+`addLanguageByCountryCode()` adds a language to the current ones; note that the
+parser starts with English by default:
 ```php
-$parser = (new Parser())->addLanguageByCountryCode('NL');   // English + Dutch
+$parser = (new Parser())->setLanguagesByCountryCode('ES');         // Spanish only
+$parser = (new Parser())->setLanguagesByCountryCode('ES', 'GB');   // Spanish, English as fallback
 
-$parser = (new Parser())
-    ->setLanguages([])
-    ->addLanguageByCountryCode('ES');                       // Spanish only
+$parser = (new Parser())->addLanguageByCountryCode('NL');          // English + Dutch
 ```
 If the country code is not supported (e.g. `PL`, or an empty/invalid code),
 English is added as a fallback instead, so the parser always has a usable language.
@@ -374,6 +376,7 @@ as the **first** language:
 
 ```php
 $parser = new Parser([new Spanish(), new English()]); // Spanish structure, English as fallback for titles etc.
+$parser = (new Parser())->setLanguagesByCountryCode('ES', 'GB'); // the same, by country code
 ```
 The structure always comes from the first language passed to the parser, because
 the parser has no way to detect the language of a name. Use the Spanish structure

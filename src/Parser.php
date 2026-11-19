@@ -373,6 +373,27 @@ class Parser
     }
 
     /**
+     * replace all languages with the ones for the given country codes
+     *
+     * The first country code becomes the primary language, which also defines
+     * the name structure (e.g. two surnames for "ES"). Like addLanguageByCountryCode(),
+     * unsupported country codes fall back to English and every language is added once.
+     *
+     * @param string $countryCode ISO 3166-1 alpha-2 country code of the primary language, case-insensitive
+     * @param string ...$additionalCountryCodes country codes of fallback languages, in order of precedence
+     */
+    public function setLanguagesByCountryCode(string $countryCode, string ...$additionalCountryCodes): static
+    {
+        $this->setLanguages([]);
+
+        foreach ([$countryCode, ...$additionalCountryCodes] as $code) {
+            $this->addLanguageByCountryCode($code);
+        }
+
+        return $this;
+    }
+
+    /**
      * check if a language of the given class was added to the parser
      *
      * @param class-string<LanguageInterface> $languageClass
