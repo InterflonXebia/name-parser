@@ -13,6 +13,15 @@ use InterflonXebia\NameParser\Part\Salutation;
 class FirstnameMapper extends AbstractMapper
 {
     /**
+     * @param bool $compound map all consecutive given names as firstname
+     *                       (e.g. "María José") instead of only the first one
+     */
+    public function __construct(
+        protected readonly bool $compound = false,
+    ) {
+    }
+
+    /**
      * map firstnames in parts array
      *
      * @param array<int, AbstractPart|string> $parts the parts
@@ -26,8 +35,14 @@ class FirstnameMapper extends AbstractMapper
 
         $pos = $this->findFirstnamePosition($parts);
 
-        if (null !== $pos) {
-            $parts[$pos] = new Firstname($parts[$pos]);
+        if (null === $pos) {
+            return $parts;
+        }
+
+        $parts[$pos] = new Firstname($parts[$pos]);
+
+        if ($this->compound) {
+            $parts = $this->mapFollowingGivenNames($parts, $pos + 1);
         }
 
         return $parts;
@@ -40,6 +55,24 @@ class FirstnameMapper extends AbstractMapper
         }
 
         return new Firstname($part);
+    }
+
+    /**
+     * map the unmapped parts directly following the firstname as firstname,
+     * stopping at the first already mapped part (e.g. lastname, nickname, initial)
+     *
+     * @param array<int, AbstractPart|string> $parts
+     * @return array<int, AbstractPart|string>
+     */
+    protected function mapFollowingGivenNames(array $parts, int $start): array
+    {
+        $length = count($parts);
+
+        for ($k = $start; $k < $length && !($parts[$k] instanceof AbstractPart); $k++) {
+            $parts[$k] = new Firstname($parts[$k]);
+        }
+
+        return $parts;
     }
 
     /**

@@ -114,14 +114,78 @@ class LastnameMapperTest extends AbstractMapperTestCase
                 'arguments' => [
                     true
                 ],
-            ]
+            ],
+            'two lastname parts' => [
+                'input' => [
+                    'María',
+                    'José',
+                    'García',
+                    'López',
+                ],
+                'expectation' => [
+                    'María',
+                    'José',
+                    new Lastname('García'),
+                    new Lastname('López'),
+                ],
+                'arguments' => [
+                    false,
+                    2,
+                ],
+            ],
+            'two lastname parts keep one part for firstname' => [
+                'input' => [
+                    'María',
+                    'García',
+                ],
+                'expectation' => [
+                    'María',
+                    new Lastname('García'),
+                ],
+                'arguments' => [
+                    false,
+                    2,
+                ],
+            ],
+            'two lastname parts in lastname segment' => [
+                'input' => [
+                    'García',
+                    'López',
+                ],
+                'expectation' => [
+                    new Lastname('García'),
+                    new Lastname('López'),
+                ],
+                'arguments' => [
+                    true,
+                    2,
+                ],
+            ],
+            'lastname with prefix is complete' => [
+                'input' => [
+                    'Juan',
+                    'Pablo',
+                    'de',
+                    'Vega',
+                ],
+                'expectation' => [
+                    'Juan',
+                    'Pablo',
+                    new LastnamePrefix('de', 'de'),
+                    new Lastname('Vega'),
+                ],
+                'arguments' => [
+                    false,
+                    2,
+                ],
+            ],
         ];
     }
 
-    protected function getMapper($matchSingle = false)
+    protected function getMapper($matchSingle = false, $partCount = 1)
     {
         $english = new English();
 
-        return new LastnameMapper($english->getLastnamePrefixes(), $matchSingle);
+        return new LastnameMapper($english->getLastnamePrefixes(), $matchSingle, $partCount);
     }
 }
