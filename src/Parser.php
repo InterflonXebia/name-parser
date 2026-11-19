@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace InterflonXebia\NameParser;
 
-use InvalidArgumentException;
 use InterflonXebia\NameParser\Language\English;
 use InterflonXebia\NameParser\Mapper\AbstractMapper;
 use InterflonXebia\NameParser\Mapper\FirstnameMapper;
@@ -110,8 +109,8 @@ class Parser
         return (new Parser())->setMappers([
             new SalutationMapper($this->getSalutations(), $this->getMaxSalutationIndex()),
             new SuffixMapper($this->getSuffixes(), false, 2),
-            new LastnameMapper($this->getPrefixes(), true),
-            new FirstnameMapper(),
+            new LastnameMapper($this->getPrefixes(), true, $this->getLastnamePartCount()),
+            new FirstnameMapper($this->hasCompoundFirstname()),
             new MiddlenameMapper(),
         ]);
     }
@@ -123,7 +122,7 @@ class Parser
             new SuffixMapper($this->getSuffixes(), true, 1),
             new NicknameMapper($this->getNicknameDelimiters()),
             new InitialMapper($this->getMaxCombinedInitials(), true),
-            new FirstnameMapper(),
+            new FirstnameMapper($this->hasCompoundFirstname()),
             new MiddlenameMapper(true),
         ]);
     }
@@ -148,8 +147,8 @@ class Parser
                 new SalutationMapper($this->getSalutations(), $this->getMaxSalutationIndex()),
                 new SuffixMapper($this->getSuffixes()),
                 new InitialMapper($this->getMaxCombinedInitials()),
-                new LastnameMapper($this->getPrefixes()),
-                new FirstnameMapper(),
+                new LastnameMapper($this->getPrefixes(), false, $this->getLastnamePartCount()),
+                new FirstnameMapper($this->hasCompoundFirstname()),
                 new MiddlenameMapper(),
             ];
         }
@@ -207,6 +206,26 @@ class Parser
         $this->whitespace = $whitespace;
 
         return $this;
+    }
+
+    /**
+     * the name structure is defined by the first (primary) language
+     */
+    protected function getNameStructure(): ?NameStructureInterface
+    {
+        $primary = $this->languages[0] ?? null;
+
+        return $primary instanceof NameStructureInterface ? $primary : null;
+    }
+
+    protected function getLastnamePartCount(): int
+    {
+        return $this->getNameStructure()?->getLastnamePartCount() ?? 1;
+    }
+
+    protected function hasCompoundFirstname(): bool
+    {
+        return $this->getNameStructure()?->hasCompoundFirstname() ?? false;
     }
 
     /**
@@ -332,12 +351,41 @@ class Parser
     /**
      * add the language for the given country code, created by the language provider
      *
+     * Falls back to English if the language provider does not support the
+     * country code. A language of the same class that was added before is
+     * not added a second time.
+     *
      * @param string $countryCode ISO 3166-1 alpha-2 country code, case-insensitive (e.g. "NL", "es")
-     * @throws InvalidArgumentException if no language is available for the country code
      */
     public function addLanguageByCountryCode(string $countryCode): static
     {
-        return $this->addLanguage($this->getLanguageProvider()->create($countryCode));
+        $provider = $this->getLanguageProvider();
+
+        $language = $provider->supports($countryCode)
+            ? $provider->create($countryCode)
+            : new English();
+
+        if ($this->hasLanguage($language::class)) {
+            return $this;
+        }
+
+        return $this->addLanguage($language);
+    }
+
+    /**
+     * check if a language of the given class was added to the parser
+     *
+     * @param class-string<LanguageInterface> $languageClass
+     */
+    public function hasLanguage(string $languageClass): bool
+    {
+        foreach ($this->languages as $language) {
+            if ($language::class === $languageClass) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function getLanguageProvider(): LanguageProviderInterface

@@ -6,6 +6,16 @@ namespace InterflonXebia\NameParser\Language;
 
 class Spanish extends AbstractLanguage
 {
+    /**
+     * paternal and maternal surname, e.g. "García López"
+     */
+    public const LASTNAME_PART_COUNT = 2;
+
+    /**
+     * compound given names, e.g. "María José", "José Luis"
+     */
+    public const COMPOUND_FIRSTNAME = true;
+
     public const SUFFIXES = [
         'jr' => 'Jr.',
         'hijo' => 'hijo',

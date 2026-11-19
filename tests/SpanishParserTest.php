@@ -65,8 +65,7 @@ class SpanishParserTest extends TestCase
                 'Señor José Luis de las Heras',
                 [
                     'salutation' => 'Señor',
-                    'firstname' => 'José',
-                    'middlename' => 'Luis',
+                    'firstname' => 'José Luis',
                     'lastname' => 'de las Heras',
                 ],
             ],
@@ -83,6 +82,58 @@ class SpanishParserTest extends TestCase
                 [
                     'firstname' => 'Juan',
                     'lastname' => 'Pérez',
+                ],
+            ],
+            [
+                'María José García López',
+                [
+                    'firstname' => 'María José',
+                    'lastname' => 'García López',
+                ],
+            ],
+            [
+                'García López, María José',
+                [
+                    'firstname' => 'María José',
+                    'lastname' => 'García López',
+                ],
+            ],
+            [
+                'Gabriel García Márquez',
+                [
+                    'firstname' => 'Gabriel',
+                    'lastname' => 'García Márquez',
+                ],
+            ],
+            [
+                'Sra. María Fernanda Ruiz Díaz',
+                [
+                    'salutation' => 'Sra.',
+                    'firstname' => 'María Fernanda',
+                    'lastname' => 'Ruiz Díaz',
+                ],
+            ],
+            [
+                'María García',
+                [
+                    'firstname' => 'María',
+                    'lastname' => 'García',
+                ],
+            ],
+            [
+                'María (Majo) García López',
+                [
+                    'firstname' => 'María',
+                    'nickname' => 'Majo',
+                    'lastname' => 'García López',
+                ],
+            ],
+            [
+                'María J. García López',
+                [
+                    'firstname' => 'María',
+                    'initials' => 'J.',
+                    'lastname' => 'García López',
                 ],
             ],
         ];

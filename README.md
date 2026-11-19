@@ -44,13 +44,17 @@
 - `AbstractLanguage` base class: common rules shared by all languages (suffixes I–V,
   salutations Dr. and Prof.) are defined once, the language classes only list their
   specific entries. As a result, `German` now also recognises Dr. and Prof.
+- name structure per language (`NameStructureInterface`): `Spanish` parses two surnames
+  and compound first names, e.g. "María José García López" → first name "María José",
+  last name "García López"
 - `InterflonXebia\NameParser\Language\Dutch` – salutations (Dhr., De heer, Mevr., Mw., Ir., Drs., …),
   "tussenvoegsels" as last name prefixes (van, de, den, der, ter, ten, uit, v.d., …) and suffixes (jr., sr., MSc, …)
 - `InterflonXebia\NameParser\Language\Spanish` – salutations (Sr., Sra., Srta., Don, Doña, Dra., Lic., …),
   last name prefixes (de, del, la, las, los) and suffixes (Jr., hijo, …)
 - `LanguageRegistry` creating language definitions by country code (`$registry->create('NL')`),
   behind the `LanguageProviderInterface` abstraction
-- `Parser::addLanguageByCountryCode()`, `addLanguage()`, `setLanguages()` and `getLanguages()`
+- `Parser::addLanguageByCountryCode()` (falls back to English for unsupported country codes),
+  `addLanguage()`, `setLanguages()`, `getLanguages()` and `hasLanguage()`
 - languages and settings changed after the first `parse()` call are now applied
   (the default mappers used to be cached with the configuration of the first call)
 
@@ -232,6 +236,13 @@ $parser = (new Parser())
     ->setLanguages([])
     ->addLanguageByCountryCode('ES');                       // Spanish only
 ```
+If the country code is not supported (e.g. `PL`, or an empty/invalid code),
+English is added as a fallback instead, so the parser always has a usable language.
+A language that is already part of the parser is not added a second time
+(e.g. `NL` and `BE` both map to Dutch). Use `$parser->hasLanguage(Dutch::class)`
+to check which languages are set, or `LanguageRegistry::supports()` beforehand
+if you need to know whether a country code is supported.
+
 Languages added earlier take precedence when they define the same salutation,
 suffix or prefix. `addLanguageByCountryCode()` uses a `LanguageRegistry` with the
 built-in languages, unless you pass your own `LanguageProviderInterface`
@@ -347,6 +358,42 @@ The common rules shared by all languages (Roman numeral suffixes I–V and the
 academic titles Dr. and Prof.) are added automatically. A language specific
 entry with the same key takes precedence, and a language can drop the common
 rules by overriding `COMMON_SUFFIXES`, `COMMON_SALUTATIONS` or `COMMON_LASTNAME_PREFIXES`.
+
+#### Name structure (e.g. Spanish names)
+Languages can also define how names are structured. By default (English),
+a name has one first name, optional middle names and one last name. Spanish
+names usually have a compound first name and two surnames, so with `Spanish`
+as the **first** language:
+
+| Input | First name | Last name |
+|---|---|---|
+| María José García López | María José | García López |
+| García López, María José | María José | García López |
+| Gabriel García Márquez | Gabriel | García Márquez |
+| José Luis de las Heras | José Luis | de las Heras |
+
+```php
+$parser = new Parser([new Spanish(), new English()]); // Spanish structure, English as fallback for titles etc.
+```
+The structure always comes from the first language passed to the parser, because
+the parser has no way to detect the language of a name. Use the Spanish structure
+only for names you know are Spanish, otherwise e.g. "John Michael Smith" would
+be parsed with the last name "Michael Smith".
+
+A custom language sets the structure with two constants:
+```php
+class Portuguese extends AbstractLanguage
+{
+    public const LASTNAME_PART_COUNT = 2;   // number of surnames, prefixes not counted
+    public const COMPOUND_FIRSTNAME = false; // true: all given names form the first name
+}
+```
+Language classes that implement `LanguageInterface` directly can provide the
+same information by implementing `NameStructureInterface`.
+
+Known limitation: a second surname starting with a prefix is not recognised,
+e.g. "Juan García de la Vega" is parsed as first name "Juan García" and
+last name "de la Vega".
 
 To deal with parsing order you may want to reformat the input string,
 e.g. by simply splitting it into words and reversing their order.

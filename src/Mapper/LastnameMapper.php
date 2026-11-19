@@ -16,10 +16,14 @@ class LastnameMapper extends AbstractMapper
     /**
      * @param array<string, string> $prefixes lowercase lookup key => normalized prefix
      * @param bool $matchSinglePart whether a single part may be mapped as lastname
+     *                              (used for the lastname segment of comma-separated names)
+     * @param int $partCount number of lastname parts to map at least, prefixes not counted;
+     *                       at least one part is left for the firstname unless $matchSinglePart is set
      */
     public function __construct(
         protected readonly array $prefixes,
         protected readonly bool $matchSinglePart = false,
+        protected readonly int $partCount = 1,
     ) {
     }
 
@@ -49,6 +53,7 @@ class LastnameMapper extends AbstractMapper
     {
         $k = $this->skipIgnoredParts($parts) + 1;
         $remapIgnored = true;
+        $mappedParts = 0;
 
         while (--$k >= 0) {
             $part = $parts[$k];
@@ -63,13 +68,14 @@ class LastnameMapper extends AbstractMapper
                     continue;
                 }
 
-                if ($this->shouldStopMapping($parts, $k)) {
+                if (!$this->needsMoreParts($parts, $k, $mappedParts) && $this->shouldStopMapping($parts, $k)) {
                     break;
                 }
             }
 
             $parts[$k] = new Lastname($part);
             $remapIgnored = false;
+            $mappedParts++;
         }
 
         if ($remapIgnored) {
@@ -152,6 +158,28 @@ class LastnameMapper extends AbstractMapper
         }
 
         return strlen($lastPart->getValue()) >= 3;
+    }
+
+    /**
+     * indicates if the part at index $k must be mapped as lastname because
+     * fewer than the expected number of lastname parts have been found
+     *
+     * A lastname that starts with a prefix (e.g. "de la Vega") is complete,
+     * and at least one part is left for the firstname.
+     *
+     * @param array<int, AbstractPart|string> $parts
+     */
+    protected function needsMoreParts(array $parts, int $k, int $mappedParts): bool
+    {
+        if ($mappedParts >= $this->partCount) {
+            return false;
+        }
+
+        if ($parts[$this->skipNicknameParts($parts, $k + 1)] instanceof LastnamePrefix) {
+            return false;
+        }
+
+        return $this->matchSinglePart || $this->hasUnmappedPartsBefore($parts, $k);
     }
 
     /**
