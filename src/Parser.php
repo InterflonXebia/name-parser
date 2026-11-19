@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace InterflonXebia\NameParser;
 
+use InvalidArgumentException;
 use InterflonXebia\NameParser\Language\English;
 use InterflonXebia\NameParser\Mapper\AbstractMapper;
 use InterflonXebia\NameParser\Mapper\FirstnameMapper;
@@ -24,6 +25,17 @@ class Parser
     protected array $mappers = [];
 
     /**
+     * whether the mappers were set explicitly via setMappers()
+     * (only the default mappers are rebuilt when the configuration changes)
+     */
+    private bool $hasCustomMappers = false;
+
+    /**
+     * creates languages for addLanguageByCountryCode(), defaults to a LanguageRegistry
+     */
+    protected ?LanguageProviderInterface $languageProvider = null;
+
+    /**
      * @var LanguageInterface[]
      */
     protected array $languages = [];
@@ -39,10 +51,13 @@ class Parser
 
     /**
      * @param LanguageInterface[] $languages defaults to English
+     * @param LanguageProviderInterface|null $languageProvider used by addLanguageByCountryCode(),
+     *                                                         defaults to a LanguageRegistry with the built-in languages
      */
-    public function __construct(array $languages = [])
+    public function __construct(array $languages = [], ?LanguageProviderInterface $languageProvider = null)
     {
         $this->languages = $languages ?: [new English()];
+        $this->languageProvider = $languageProvider;
     }
 
     /**
@@ -128,7 +143,7 @@ class Parser
     public function getMappers(): array
     {
         if (empty($this->mappers)) {
-            $this->setMappers([
+            $this->mappers = [
                 new NicknameMapper($this->getNicknameDelimiters()),
                 new SalutationMapper($this->getSalutations(), $this->getMaxSalutationIndex()),
                 new SuffixMapper($this->getSuffixes()),
@@ -136,7 +151,7 @@ class Parser
                 new LastnameMapper($this->getPrefixes()),
                 new FirstnameMapper(),
                 new MiddlenameMapper(),
-            ]);
+            ];
         }
 
         return $this->mappers;
@@ -150,8 +165,20 @@ class Parser
     public function setMappers(array $mappers): static
     {
         $this->mappers = $mappers;
+        $this->hasCustomMappers = !empty($mappers);
 
         return $this;
+    }
+
+    /**
+     * drop the cached default mappers, so they are rebuilt with the
+     * current configuration on the next parse() call
+     */
+    private function resetDefaultMappers(): void
+    {
+        if (!$this->hasCustomMappers) {
+            $this->mappers = [];
+        }
     }
 
     /**
@@ -238,6 +265,7 @@ class Parser
     public function setNicknameDelimiters(array $nicknameDelimiters): static
     {
         $this->nicknameDelimiters = $nicknameDelimiters;
+        $this->resetDefaultMappers();
 
         return $this;
     }
@@ -250,6 +278,7 @@ class Parser
     public function setMaxSalutationIndex(int $maxSalutationIndex): static
     {
         $this->maxSalutationIndex = $maxSalutationIndex;
+        $this->resetDefaultMappers();
 
         return $this;
     }
@@ -262,20 +291,63 @@ class Parser
     public function setMaxCombinedInitials(int $maxCombinedInitials): static
     {
         $this->maxCombinedInitials = $maxCombinedInitials;
+        $this->resetDefaultMappers();
 
         return $this;
     }
 
+    /**
+     * @return LanguageInterface[]
+     */
+    public function getLanguages(): array
+    {
+        return $this->languages;
+    }
+
+    /**
+     * replace all languages
+     *
+     * @param LanguageInterface[] $languages
+     */
     public function setLanguages(array $languages): static
     {
         $this->languages = $languages;
+        $this->resetDefaultMappers();
 
         return $this;
     }
 
+    /**
+     * add a language; languages added earlier take precedence
+     * when they define the same salutation, suffix or prefix
+     */
     public function addLanguage(LanguageInterface $language): static
     {
         $this->languages[] = $language;
+        $this->resetDefaultMappers();
+
+        return $this;
+    }
+
+    /**
+     * add the language for the given country code, created by the language provider
+     *
+     * @param string $countryCode ISO 3166-1 alpha-2 country code, case-insensitive (e.g. "NL", "es")
+     * @throws InvalidArgumentException if no language is available for the country code
+     */
+    public function addLanguageByCountryCode(string $countryCode): static
+    {
+        return $this->addLanguage($this->getLanguageProvider()->create($countryCode));
+    }
+
+    public function getLanguageProvider(): LanguageProviderInterface
+    {
+        return $this->languageProvider ??= new LanguageRegistry();
+    }
+
+    public function setLanguageProvider(LanguageProviderInterface $languageProvider): static
+    {
+        $this->languageProvider = $languageProvider;
 
         return $this;
     }

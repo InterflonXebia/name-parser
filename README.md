@@ -41,10 +41,18 @@
 - camel-casing always uses `mb_convert_case()`; the non-multibyte fallback was removed
 
 ### New languages
+- `AbstractLanguage` base class: common rules shared by all languages (suffixes I–V,
+  salutations Dr. and Prof.) are defined once, the language classes only list their
+  specific entries. As a result, `German` now also recognises Dr. and Prof.
 - `InterflonXebia\NameParser\Language\Dutch` – salutations (Dhr., De heer, Mevr., Mw., Ir., Drs., …),
   "tussenvoegsels" as last name prefixes (van, de, den, der, ter, ten, uit, v.d., …) and suffixes (jr., sr., MSc, …)
 - `InterflonXebia\NameParser\Language\Spanish` – salutations (Sr., Sra., Srta., Don, Doña, Dra., Lic., …),
   last name prefixes (de, del, la, las, los) and suffixes (Jr., hijo, …)
+- `LanguageRegistry` creating language definitions by country code (`$registry->create('NL')`),
+  behind the `LanguageProviderInterface` abstraction
+- `Parser::addLanguageByCountryCode()`, `addLanguage()`, `setLanguages()` and `getLanguages()`
+- languages and settings changed after the first `parse()` call are now applied
+  (the default mappers used to be cached with the configuration of the first call)
 
 ### Backwards compatibility
 Code that only *uses* the parser works as before once the namespace is updated (see below),
@@ -194,6 +202,55 @@ $parser = new InterflonXebia\NameParser\Parser([
 ])
 ```
 
+#### Setting languages by country code
+`LanguageRegistry` creates language definitions from an ISO 3166-1 alpha-2 country code
+(case-insensitive). Countries with several official languages are mapped to the
+language most commonly used for names there (e.g. `BE` → Dutch, `CH` → German).
+```php
+use InterflonXebia\NameParser\LanguageRegistry;
+use InterflonXebia\NameParser\Parser;
+
+$registry = new LanguageRegistry();
+
+$parser = new Parser([
+    $registry->create('NL'),
+    $registry->create('GB'), // fallback
+]);
+
+$registry->supports('es');      // true
+$registry->getCountryCodes();   // ['GB', 'UK', 'US', ..., 'NL', 'BE', ..., 'ES', 'MX', ...]
+$registry->create('PL');        // throws InvalidArgumentException
+```
+
+Languages can also be added to an existing parser by country code.
+The parser starts with English by default, so clear the languages first
+if you want to use only the added ones:
+```php
+$parser = (new Parser())->addLanguageByCountryCode('NL');   // English + Dutch
+
+$parser = (new Parser())
+    ->setLanguages([])
+    ->addLanguageByCountryCode('ES');                       // Spanish only
+```
+Languages added earlier take precedence when they define the same salutation,
+suffix or prefix. `addLanguageByCountryCode()` uses a `LanguageRegistry` with the
+built-in languages, unless you pass your own `LanguageProviderInterface`
+to the constructor (`new Parser([], $provider)`) or to `setLanguageProvider()`.
+
+To support more countries or your own language definitions, register them
+(an existing country code is replaced), or pass a complete list to the constructor:
+```php
+$registry = (new LanguageRegistry())
+    ->register('PL', MyPolishLanguage::class)
+    ->register('BE', MyFrenchLanguage::class);
+
+$registry = new LanguageRegistry(['NL' => Dutch::class, 'BE' => Dutch::class]); // only these
+```
+
+Code that only needs to create languages should depend on `LanguageProviderInterface`
+(`create()` and `supports()`), so the registry can be replaced, e.g. by a test double
+or a provider reading the mapping from configuration.
+
 ### Setting nickname delimiters
 ```php
 $parser = new InterflonXebia\NameParser\Parser();
@@ -267,6 +324,29 @@ To solve problems with salutations, last name prefixes and suffixes
 you can create a separate language definition file and inject it when
 instantiating the parser, see 'Setting Languages' above and compare
 the existing language files as examples.
+
+The easiest way is to extend `AbstractLanguage` and define only the
+language specific entries. Keys are lowercase and without dots,
+values are the normalized output:
+```php
+use InterflonXebia\NameParser\Language\AbstractLanguage;
+
+class Polish extends AbstractLanguage
+{
+    public const SALUTATIONS = [
+        'pan' => 'Pan',
+        'pani' => 'Pani',
+    ];
+
+    public const SUFFIXES = [
+        'jr' => 'jr.',
+    ];
+}
+```
+The common rules shared by all languages (Roman numeral suffixes I–V and the
+academic titles Dr. and Prof.) are added automatically. A language specific
+entry with the same key takes precedence, and a language can drop the common
+rules by overriding `COMMON_SUFFIXES`, `COMMON_SALUTATIONS` or `COMMON_LASTNAME_PREFIXES`.
 
 To deal with parsing order you may want to reformat the input string,
 e.g. by simply splitting it into words and reversing their order.
