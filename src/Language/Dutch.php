@@ -29,6 +29,9 @@ class Dutch extends AbstractLanguage
         'ir' => 'Ir.',
         'ing' => 'Ing.',
         'mr' => 'Mr.',
+        'mrs' => 'Mrs.',
+        'ms' => 'Ms.',
+        'miss' => 'Miss',
     ];
 
     /**
